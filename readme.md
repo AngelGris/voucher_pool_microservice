@@ -61,3 +61,6 @@ The Postman collection found in the *docs* folder includes API calls and testing
 You can use the `GET vouchers` call to get the list of valid voucher codes and use one of those in the `POST voucher` call, using the same recipient email.
 
 If the `POST voucher` call is successful, it means the voucher was used and trying to use it again will throw an *“Invalid voucher code error”*, so it requires a new valid voucher code each time it’s successfully tested.
+
+### Test instance
+A test instance was enabled and configured for this project. Can see it working at http://35.163.165.1:8000/
