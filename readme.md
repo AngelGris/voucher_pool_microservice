@@ -1,58 +1,63 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# Voucher Pool Microservice
+### PHP development task for VanHack
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+## General description
+The voucher pool microservice was developed using Laravel 5.5, Bootstrap 4 and jQuery libraries Dynatable for dynamic tables and datepicker.
 
-## About Laravel
+Postman was used to test the API calls.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+## Installation
+1. Clone this repository
+2. Create an empty database for this project in your database engine.
+3. Configure the database connection in *config/database.php* file.
+4. Copy **.env.example** file to **.env** and change the database connection configuration there too. Optionally, the application name can be set in the .env file too. (If the application name has more than one word it’s required to enclose them in quotes, i.e. “My App”)
+5. In a command line window go to the Laravel project folder and update dependencies running `composer update`.
+6. Still in Laravel’s project folder run `php artisan migrate` to create the tables in the database.
+7. Optionally seed the database by running `php artisan db:seed`. This creates 50 recipients, 5 special offers and the corresponding voucher codes. One of the recipients created is john@doe.com, which is used later for testing.
+8. Now run `php artisan key:generate` to generate a unique encryption key for this Laravel instance.
+9. Run `php artisan serve` in the command line to start Laravel server. Now you can enter your web browser and go to **http://localhost:8000** to see it working.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Web interface
+The system doesn’t have and security or authorization integrated, so accessing the sites takes the user right tot he main page without any login required.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+### Home
+The main page shows some basic statistics of the system (total vouchers, unused vouchers and used vouchers), and below them a list of the created vouchers displayed in a dynamic table that allows sorting by clicking on the headers, changing the number of results per page and run a quick search.
 
-## Learning Laravel
+There’s also a blue *Add vouchers* button to create new offers and vouchers.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+### Add vouchers
+To add new special offer click the blue button that will take you to the *Add vouchers* form. The form only has 3 fields: 2 text boxes for the offer name and discount and a date picker for the expiration date.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+All fields are mandatory and after submitting them a new special offer is created in the database and a new voucher for each recipient is generated.
 
-## Laravel Sponsors
+## API Endpoint
+An API endpoint is provided to get a list of the valid vouchers for a given recipient and to redeem a voucher code. Since no authorization system is implemented, no API key or token are required.
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+The API endpoint will be available at **http://localhost:8000/api** while the Laravel server is running
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Pulse Storm](http://www.pulsestorm.net/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
+### GET vouchers/{email_address}
+If the provided email address is valid and corresponds to a registered recipient, a list of the valid vouchers for that recipient will be retrieved. The retrieved list include the special offer name, voucher code, discount and expiration date.
 
-## Contributing
+*Valid vouchers are those that hadn’t been used yet and are not expired.*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+### POST voucher
+This POST call uses 2 parameters: recipient email address and voucher code. If the email is valid and belongs to a registered recipient and the voucher is for a valid voucher for that same recipient, then it’s redeemed using the current date and the discount to be applied retrieved.
 
-## Security Vulnerabilities
+## Testing
+To test this application, testing code has been written both in Laravel, which uses phpunit for testing, and in Postman.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Tests run using john@doe.com recipient, so seeding the database, or manually creating this recipient and some vouchers for it, is required before testing.
 
-## License
+### Testing in Laravel
+To run the test cases for Laravel open a command line prompt, go to the project folder and run `./vendor/bin/phpunit`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+Laravel tests for response codes on the different URLs and API calls, views display and form validations for the *Add vouchers* form.
+
+Postman collection has further testing for the API calls.
+
+### Testing in Postman
+The Postman collection found in the *docs* folder includes API calls and testing code for them. The `POST voucher` call needs a valid voucher code in order to work, otherwise it’ll return an *“invalid voucher code”* error.
+
+You can use the `GET vouchers` call to get the list of valid voucher codes and use one of those in the `POST voucher` call, using the same recipient email.
+
+If the `POST voucher` call is successful, it means the voucher was used and trying to use it again will throw an *“Invalid voucher code error”*, so it requires a new valid voucher code each time it’s successfully tested.
