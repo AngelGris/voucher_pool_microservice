@@ -31,10 +31,9 @@ class SpecialOfferController extends Controller
 
         /**
          * For some reason putting both validations together keeps throwing an error in phpunit tests
-         *
          */
         $this->validate($request, [
-            'expiration'    => 'after:yesterday',
+            'expiration'    => 'required|date_format:d/m/Y|after:yesterday',
         ]);
 
         $specialOffer = new SpecialOffer([

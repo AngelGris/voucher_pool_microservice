@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Carbon\Carbon;
 
 class CreateSpecialOfferTest extends TestCase
 {
@@ -87,12 +88,12 @@ class CreateSpecialOfferTest extends TestCase
         $response->assertSessionHasErrors(['expiration']);
 
         /**
-         * Date must have d/m/Y format
+          * Date must be today or after
          */
         $response = $this->post(route('offer.create'), [
             'name'          => $name,
             'discount'      => $discount,
-            'expiration'    => '20/12/2017'
+            'expiration'    => Carbon::yesterday()
         ]);
 
         // Check errors returned

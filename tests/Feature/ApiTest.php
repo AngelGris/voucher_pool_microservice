@@ -52,21 +52,23 @@ class ApiTest extends TestCase
 
         $response->assertStatus(400);
 
-        /**
-         * Expired voucher code
-         */
-        $response = $this->post(route('api.voucher'), [
-            'email'         => $recipient->email,
-            'voucher_code'  => $voucher_code_expired->code
-        ]);
+        if ($voucher_code_expired) {
+            /**
+             * Expired voucher code
+             */
+            $response = $this->post(route('api.voucher'), [
+                'email'         => $recipient->email,
+                'voucher_code'  => $voucher_code_expired->code
+            ]);
 
-        $response->assertStatus(400);
+            $response->assertStatus(400);
+        }
 
         /**
          * Missing email
          */
         $response = $this->post(route('api.voucher'), [
-            'voucher_code'  => $voucher_code_valid->code
+            'voucher_code'  => 'somecode'
         ]);
 
         $response->assertStatus(400);
@@ -85,7 +87,7 @@ class ApiTest extends TestCase
          */
         $response = $this->post(route('api.voucher'), [
             'email'         => 'a' . $recipient->email,
-            'voucher_code'  => $voucher_code_valid->code
+            'voucher_code'  => 'somecode'
         ]);
 
         $response->assertStatus(400);
@@ -95,29 +97,32 @@ class ApiTest extends TestCase
          */
         $response = $this->post(route('api.voucher'), [
             'email'         => $recipient->email,
-            'voucher_code'  => $voucher_code_valid->code . 'a'
+            'voucher_code'  => 'somecode'
         ]);
 
         $response->assertStatus(400);
 
-        /**
-         * Successful
-         */
-        $response = $this->post(route('api.voucher'), [
-            'email'         => $recipient->email,
-            'voucher_code'  => $voucher_code_valid->code
-        ]);
 
-        $response->assertStatus(200);
+        if ($voucher_code_valid) {
+            /**
+             * Successful
+             */
+            $response = $this->post(route('api.voucher'), [
+                'email'         => $recipient->email,
+                'voucher_code'  => $voucher_code_valid->code
+            ]);
 
-        /**
-         * Just used voucher
-         */
-        $response = $this->post(route('api.voucher'), [
-            'email'         => $recipient->email,
-            'voucher_code'  => $voucher_code_valid->code
-        ]);
+            $response->assertStatus(200);
 
-        $response->assertStatus(400);
+            /**
+             * Just used voucher
+             */
+            $response = $this->post(route('api.voucher'), [
+                'email'         => $recipient->email,
+                'voucher_code'  => $voucher_code_valid->code
+            ]);
+
+            $response->assertStatus(400);
+        }
     }
 }
