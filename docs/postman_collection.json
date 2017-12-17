@@ -1,0 +1,556 @@
+{
+	"info": {
+		"name": "Newsletters",
+		"_postman_id": "3f6d5223-ae9b-9abe-8ff2-6ee928a228b7",
+		"description": "PHP developer test for VanHack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get vouchers",
+			"description": "",
+			"item": [
+				{
+					"name": "GET vouchers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "793a2ce7-7eea-4e3d-82c6-e3a4f7004b70",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(200);",
+									"    pm.expect(jsonData.message).to.equal('Successful');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/vouchers/john@doe.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vouchers",
+								"john@doe.com"
+							]
+						},
+						"description": "Get a list of valid vouchers for given email address"
+					},
+					"response": []
+				},
+				{
+					"name": "GET vouchers [Missing email]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4a34655c-a2f6-41d3-9ebe-d49c8422dc2c",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(404);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(404);",
+									"    pm.expect(jsonData.message).to.equal('Not Found');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/vouchers/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vouchers",
+								""
+							]
+						},
+						"description": "Get a list of valid vouchers for given email address"
+					},
+					"response": []
+				},
+				{
+					"name": "GET vouchers [Unregistered email]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1c3243e4-753c-428b-ab83-e1e6383892f1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('Invalid email address.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/vouchers/john@doe.co",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vouchers",
+								"john@doe.co"
+							]
+						},
+						"description": "Get a list of valid vouchers for given email address"
+					},
+					"response": []
+				},
+				{
+					"name": "GET vouchers [Invalid email]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "00a531cf-9f98-42d7-bac5-176ee0ed6119",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(404);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(404);",
+									"    pm.expect(jsonData.message).to.equal('Not Found');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/vouchers/johndoe.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"vouchers",
+								"johndoe.com"
+							]
+						},
+						"description": "Get a list of valid vouchers for given email address"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST voucher",
+			"description": "Send an email and voucher code and get in response dicount applied. Voucher is marked as used.",
+			"item": [
+				{
+					"name": "POST voucher",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8540a0ff-416f-4ecd-87fb-51e1f97093d1",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(200);",
+									"    pm.expect(jsonData.message).to.equal('Successful');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/?email=john@doe.com&voucher_code=ae7sKQdtJyy7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "john@doe.com",
+									"equals": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "ae7sKQdtJyy7",
+									"equals": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				},
+				{
+					"name": "POST voucher [No Parameters]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "10893b07-423e-4380-96c8-e0d5ddb5683f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('The email field is required.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "jhon@doe.com",
+									"equals": true,
+									"disabled": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "bnTxIQX9L8GE",
+									"equals": true,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				},
+				{
+					"name": "POST voucher [Missing email]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1dff86bd-cc03-4d53-8e32-8efb399b5598",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('The email field is required.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/?voucher_code=bnTxIQX9L8GE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "jhon@doe.com",
+									"equals": true,
+									"disabled": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "bnTxIQX9L8GE",
+									"equals": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				},
+				{
+					"name": "POST voucher [Missing code]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6f74f252-aa29-4f27-b22e-608b095aa41f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('The voucher code field is required.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/?email=jhon@doe.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "jhon@doe.com",
+									"equals": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "bnTxIQX9L8GE",
+									"equals": true,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				},
+				{
+					"name": "POST voucher [Invalid email]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6f14abb3-fc1a-4465-b6cc-2b1eaf87cfdc",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('Invalid email address.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/?email=jhon@doe.co&voucher_code=bnTxIQX9L8GE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "jhon@doe.co",
+									"equals": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "bnTxIQX9L8GE",
+									"equals": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				},
+				{
+					"name": "POST voucher [Invalid code]",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6f5d0bdb-36d9-458b-a99c-4d023d1ae11f",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"checkResponse\", function() {",
+									"    pm.response.to.have.status(400);",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"checkData\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.code).to.equal(400);",
+									"    pm.expect(jsonData.message).to.equal('Invalid voucher code.');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8000/api/voucher/?email=john@doe.com&voucher_code=bnTxIQX9L8GE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"voucher",
+								""
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "john@doe.com",
+									"equals": true
+								},
+								{
+									"key": "voucher_code",
+									"value": "bnTxIQX9L8GE",
+									"equals": true
+								}
+							]
+						},
+						"description": "Reddem a voucher and retrieve discount value"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
